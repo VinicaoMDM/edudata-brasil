@@ -1,1 +1,6 @@
-# Core
+pandas
+sqlalchemy
+psycopg[binary]
+requests
+python-dotenv
+jupyterlab
