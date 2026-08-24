@@ -30,3 +30,6 @@ Thumbs.db
 
 # PostgreSQL / local
 *.sql.bak
+
+# Pytest
+.pytest_cache/
