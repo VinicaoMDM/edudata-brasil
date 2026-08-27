@@ -1,21 +1,20 @@
 from pathlib import Path
 
 from src.extraction.downloader import download_file
-from src.loading.dataset_version_repository import get_dataset_versions
+from src.loading.dataset_version_repository import get_dataset_version
 
 
 def extract_dataset(
     dataset_id: int,
+    versao: str,
     destination: Path,
 ) -> Path:
-    versions = get_dataset_versions(dataset_id)
+    version = get_dataset_version(dataset_id, versao)
 
-    if not versions:
+    if version is None:
         raise ValueError(
-            f"Nenhuma versão encontrada para o dataset {dataset_id}."
+            f"Versão {versao} não encontrada para o dataset {dataset_id}."
         )
-
-    version = versions[0]
 
     url = version["url_download"]
 
