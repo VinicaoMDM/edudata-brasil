@@ -11,11 +11,18 @@ def download_file(url: str, destination: Path) -> Path:
     destination.parent.mkdir(parents=True, exist_ok=True)
 
     try:
-        response = requests.get(url, timeout=60)
+        response = requests.get(
+            url,
+            timeout=60,
+            stream=True,
+        )
         response.raise_for_status()
     except requests.RequestException as exc:
         raise RuntimeError(f"Erro ao baixar arquivo: {url}") from exc
 
-    destination.write_bytes(response.content)
+    with destination.open("wb") as file:
+        for chunk in response.iter_content(chunk_size=8192):
+            if chunk:
+                file.write(chunk)
 
     return destination

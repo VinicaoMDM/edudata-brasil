@@ -9,14 +9,18 @@ def test_download_file(tmp_path, monkeypatch):
     destination = tmp_path / "arquivo.txt"
 
     class FakeResponse:
-        content = b"EduData Brasil"
-
         def raise_for_status(self):
             pass
 
-    def fake_get(url, timeout):
+        def iter_content(self, chunk_size):
+            assert chunk_size == 8192
+            yield b"EduData "
+            yield b"Brasil"
+
+    def fake_get(url, timeout, stream):
         assert url == "https://example.com/arquivo.txt"
         assert timeout == 60
+        assert stream is True
         return FakeResponse()
 
     monkeypatch.setattr(downloader.requests, "get", fake_get)
@@ -34,7 +38,7 @@ def test_download_file(tmp_path, monkeypatch):
 def test_download_file_network_error(tmp_path, monkeypatch):
     destination = tmp_path / "arquivo.txt"
 
-    def fake_get(url, timeout):
+    def fake_get(url, timeout, stream):
         raise downloader.requests.ConnectionError("Erro de conexão")
 
     monkeypatch.setattr(downloader.requests, "get", fake_get)
