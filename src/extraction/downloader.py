@@ -10,8 +10,11 @@ def download_file(url: str, destination: Path) -> Path:
 
     destination.parent.mkdir(parents=True, exist_ok=True)
 
-    response = requests.get(url, timeout=60)
-    response.raise_for_status()
+    try:
+        response = requests.get(url, timeout=60)
+        response.raise_for_status()
+    except requests.RequestException as exc:
+        raise RuntimeError(f"Erro ao baixar arquivo: {url}") from exc
 
     destination.write_bytes(response.content)
 
