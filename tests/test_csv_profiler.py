@@ -29,6 +29,11 @@ def test_profile_csv_from_zip(tmp_path):
     assert result["linhas_analisadas"] == 3
     assert result["colunas"] == 3
 
+    assert result["resumo"]["colunas_numericas"] == 1
+    assert result["resumo"]["colunas_texto"] == 2
+    assert result["resumo"]["colunas_com_nulos"] == 1
+    assert result["resumo"]["colunas_sem_nulos"] == 2
+
     columns = result["detalhes_colunas"]
 
     assert columns[0]["nome"] == "NU_ANO_CENSO"
@@ -36,4 +41,13 @@ def test_profile_csv_from_zip(tmp_path):
     assert columns[2]["nome"] == "NO_MUNICIPIO"
 
     assert columns[1]["nulos"] == 1
-    assert round(columns[1]["percentual_nulos"], 2) == 33.33
+    assert round(
+        columns[1]["percentual_nulos"],
+        2,
+    ) == 33.33
+
+    assert columns[1]["valores_unicos"] == 2
+    assert columns[1]["amostra_valores"] == [
+        "Norte",
+        "Nordeste",
+    ]
